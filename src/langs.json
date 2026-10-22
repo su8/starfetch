@@ -1,0 +1,16 @@
+{
+  "en": {
+    "quadrant": "Quadrant",
+    "rightAscension": "Right ascension",
+    "declination": "Declination",
+    "area": "Area",
+    "mainStars": "Main stars"
+    },
+  "bg": {
+    "quadrant": "Квадрант",
+    "rightAscension": "Издигане",
+    "declination": "Отклонение",
+    "area": "Площ",
+    "mainStars": "Главни звезди"
+  }
+}

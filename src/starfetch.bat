@@ -8,6 +8,6 @@ COPY starfetch.exe C:\MingW\bin\starfetch.exe
 )
 CLS
 :loop
-C:\MingW\bin\starfetch.exe -c blue
+C:\MingW\bin\starfetch.exe en
 PAUSE
 GOTO loop

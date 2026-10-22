@@ -17,12 +17,17 @@
 
 using namespace std;
 using json = nlohmann::json;
+json config;
+std::string userLang = "en";
+#define CONF config[userLang]
+
 
 static void setColor(string color); //sets given color to the REQUESTED_COLOR variable to colorize the output constellation
 static inline void PrintConst(string &pathc);  //formats the template file with the requested data and prints out the constellation info
 static void PrintList();   //prints out the list of the available constellations
 static void Error(const char *err, int type);   //shows an error message
 static void Help();    //prints out the help message
+static std::string trim(std::string str); // trim excess quotes
 
 #ifdef _WIN32
 static string path = "C:\\starfetch\\";
@@ -34,15 +39,24 @@ static string SEP = "/";
 static string directories[2] = {"constellations", "norse-constellations"}; // array that holds all the directory paths. Consider using a multidimensional array to hold the directory name and also the "nickname" to be used for <type> when using "starfetch -n <type> <constellation>"
 static string REQUESTED_COLOR = "\033[1;37m"; // white color
 static unsigned int useRandomConst = 0U; /* controls whether to use the list with constellations or the input one */
+static string configHome = path + string("langs.json");
+ifstream cfg(configHome);
 
 int main(int argc, char *argv[])
 {
+  string reqLang = "en";
   string pathc = path;    //path to the constellation file
-  if(argc == 1)   //if there's no additional arguments
+  if (argc == 2) { reqLang = string(argv[1]); }
+  unsigned int foundRequestedLanguage = 1U;
+  //if (reqLang == "en" || reqLang == "bg") { userLang = reqLang; foundRequestedLanguage = 1U; }
+  userLang = reqLang;
+  if (foundRequestedLanguage == 0U) { cerr << "Error the given language " << userLang << " does not exists. Exiting...\n"; return EXIT_FAILURE; }
+  if (!cfg) { cerr << "Error: Could not open " << configHome << "\n"; return EXIT_FAILURE; }
+  if(argc == 1 || argc == 2)   //if there's no additional arguments
   {
     useRandomConst = 1U;
   }
-  else
+  else if (argc > 2) {
     switch(argv[1][1])  //gets the time of the argument (the 'n' in "-n")
     {
       case 'p':
@@ -111,6 +125,7 @@ int main(int argc, char *argv[])
         Error(argv[1], 1);  //if the reqeusted option isn't recognized, an error occours
         break;
     }
+  }
 
   PrintConst(pathc);  //prints the constellation
   return EXIT_SUCCESS;
@@ -191,6 +206,8 @@ static inline void PrintConst(string &pathc)
   }
 
   ifstream c(pathc);  //opens the file containing constellation info
+  cfg >> config;
+  cfg.close();
   if(c.is_open())
   {
     c >> j;     //parse the selected JSON file
@@ -217,6 +234,11 @@ static inline void PrintConst(string &pathc)
       //insert the line into the template
       s.replace(s.find("%"+to_string(i)), string("%"+to_string(i)).size(), l);
       s = std::regex_replace(s, std::regex("requestedColor"), REQUESTED_COLOR);
+      s = std::regex_replace(s, std::regex("Quadrant"), trim(CONF["quadrant"]));
+      s = std::regex_replace(s, std::regex("Right ascension"), trim(CONF["rightAscension"]));
+      s = std::regex_replace(s, std::regex("Declination"), trim(CONF["declination"]));
+      s = std::regex_replace(s, std::regex("Area"), trim(CONF["area"]));
+      s = std::regex_replace(s, std::regex("Main stars"), trim(CONF["mainStars"]));
     }
 
     c.close();
@@ -266,4 +288,14 @@ static void Help()
   cout << f.rdbuf();
   f.close();
   exit(EXIT_SUCCESS);
+}
+
+// Trim excess quotes
+static std::string trim(std::string str) {
+  std::string buf;
+  for (auto &x : str) {
+    if (x == '"') { continue; }
+    buf.push_back(x);
+  }
+  return buf;
 }
