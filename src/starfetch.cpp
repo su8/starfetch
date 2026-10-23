@@ -39,41 +39,44 @@ static string SEP = "/";
 static string directories[2] = {"constellations", "norse-constellations"}; // array that holds all the directory paths. Consider using a multidimensional array to hold the directory name and also the "nickname" to be used for <type> when using "starfetch -n <type> <constellation>"
 static string REQUESTED_COLOR = "\033[1;37m"; // white color
 static unsigned int useRandomConst = 0U; /* controls whether to use the list with constellations or the input one */
-static string configHome = path + string("langs.json");
-ifstream cfg(configHome);
+static string configLangs = path + string("langs.json");
+ifstream cfg(configLangs);
 
 int main(int argc, char *argv[])
 {
-  string reqLang = "en";
+  string reqLang = "none";
   string pathc = path;    //path to the constellation file
-  if (argc == 2) { reqLang = string(argv[1]); }
-  unsigned int foundRequestedLanguage = 1U;
-  //if (reqLang == "en" || reqLang == "bg") { userLang = reqLang; foundRequestedLanguage = 1U; }
-  userLang = reqLang;
-  if (foundRequestedLanguage == 0U) { cerr << "Error the given language " << userLang << " does not exists. Exiting...\n"; return EXIT_FAILURE; }
-  if (!cfg) { cerr << "Error: Could not open " << configHome << "\n"; return EXIT_FAILURE; }
+  if (argc >= 2) { reqLang = string(argv[1]); }
+  unsigned int foundRequestedLanguage = 0U;
+  if (reqLang == "en" || reqLang == "bg" || reqLang == "it") { userLang = reqLang; foundRequestedLanguage = 1U; }
+  if (!cfg) { cerr << "Error: Could not open " << configLangs << "\n"; return EXIT_FAILURE; }
   if(argc == 1 || argc == 2)   //if there's no additional arguments
   {
     useRandomConst = 1U;
+    if (argc == 2 && !strcmp(argv[1], "-l"))
+    {
+      PrintList();
+      return EXIT_SUCCESS;
+    }
   }
-  else if (argc > 2) {
-    switch(argv[1][1])  //gets the time of the argument (the 'n' in "-n")
+  else {
+    switch(argv[foundRequestedLanguage == 0 ? 1 : 2][1])  //gets the time of the argument (the 'n' in "-n")
     {
       case 'p':
         {
-          if(argc < 3) Error(" ", 0); //if the user requested a '-n' argument but didn't provide a name, an error occurs
-          pathc += directories[0] + SEP + argv[2] + ".json"; //updating the path to the constellations folder and adding the name of the requested constallation to the pathc
+          if(argc < (foundRequestedLanguage == 0 ? 3 : 4)) Error(" ", 0); //if the user requested a '-n' argument but didn't provide a name, an error occurs
+          pathc += directories[0] + SEP + argv[foundRequestedLanguage == 0 ? 2 : 3] + ".json"; //updating the path to the constellations folder and adding the name of the requested constallation to the pathc
         }
         break;
 
         // Refactored -n
       case 'n':
         {
-          if(argc < 3) Error(" ", 0); //if the user requested a '-p' argument but didn't provide a name, an error occurs
-          if (static_cast<string>(argv[2]) == "norse" && !(argc < 4)){
-          pathc += directories[1] + SEP + argv[3] + ".json"; //updating the path to the constellations folder and adding the name of the requested constallation to the pathc
+          if(argc < (foundRequestedLanguage == 0 ? 3 : 4)) Error(" ", 0); //if the user requested a '-p' argument but didn't provide a name, an error occurs
+          if (static_cast<string>(argv[foundRequestedLanguage == 0 ? 2 : 3]) == "norse" && !(argc < 4)){
+          pathc += directories[1] + SEP + argv[foundRequestedLanguage == 0 ? 3 : 4] + ".json"; //updating the path to the constellations folder and adding the name of the requested constallation to the pathc
           } else {
-          pathc += directories[0] + SEP + argv[2] + ".json"; // if user didn't specify what constellation tradition, use default constellations
+          pathc += directories[0] + SEP + argv[foundRequestedLanguage == 0 ? 2 : 3] + ".json"; // if user didn't specify what constellation tradition, use default constellations
           }
         }
         break;
@@ -92,21 +95,18 @@ int main(int argc, char *argv[])
         useRandomConst = 1U;
       }
         break;
-      case 'l':
-        PrintList();
-        return EXIT_SUCCESS;
       case 'c':
         {
-          if (argc == 2)
+          if (argc == (foundRequestedLanguage == 0 ? 2 : 3))
           {
             cout << "Available colors are: black, white, cyan, magenta, yellow, red, blue, green" << endl;
             return EXIT_SUCCESS;
           }
-          else if (argc == 3 || argc == 4)
+          else if (argc == (foundRequestedLanguage == 0 ? 3 : 4) || argc == (foundRequestedLanguage == 0 ? 4 : 5))
           {
-            setColor(static_cast<string>(argv[2]));
+            setColor(static_cast<string>(argv[foundRequestedLanguage == 0 ? 2 : 3]));
 
-            if (argc == 4 && !strcmp(argv[3], "-l"))
+            if (argc == (foundRequestedLanguage == 0 ? 4 : 5) && !strcmp(argv[foundRequestedLanguage == 0 ? 3 : 4], "-l"))
             {
               PrintList();
               return EXIT_SUCCESS;
@@ -116,8 +116,8 @@ int main(int argc, char *argv[])
           }
           else
           {
-            pathc += directories[0] + SEP + argv[4] + ".json"; //updating the path to the constellations folder and adding the name of the requested constellation to the pathc
-            setColor(static_cast<string>(argv[2]));
+            pathc += directories[0] + SEP + argv[foundRequestedLanguage == 0 ? 4 : 5] + ".json"; //updating the path to the constellations folder and adding the name of the requested constellation to the pathc
+            setColor(static_cast<string>(argv[foundRequestedLanguage == 0 ? 2 : 3]));
           }
         }
         break;
