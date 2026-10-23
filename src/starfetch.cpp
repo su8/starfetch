@@ -220,6 +220,53 @@ static inline void PrintConst(string &pathc)
     s.replace(s.find("%15"), string("%15").size(), j["area"].get<string>());
     s.replace(s.find("%16"), string("%16").size(), j["main stars"].get<string>());
 
+    map<string, string> constellationsKeywords = {
+      {"Asar Bardagi", trim(CONF["asarBardagi"])}, 
+      {"Ulf's Keptr", trim(CONF["ulfsKeptr"])}, 
+      {"Kvennavagn", trim(CONF["kvennavagn"])}, 
+      {"Karlavagn", trim(CONF["karlavagn"])}, 
+      {"Friggerock", trim(CONF["friggerock"])}, 
+      {"Andromeda", trim(CONF["andromeda"])}, 
+      {"Virgo", trim(CONF["virgo"])}, 
+      {"Ursa Minor", trim(CONF["ursaMinor"])}, 
+      {"Ursa Major", trim(CONF["ursaMajor"])}, 
+      {"Taurus", trim(CONF["taurus"])}, 
+      {"Scorpio", trim(CONF["scorpio"])}, 
+      {"Sagittarius", trim(CONF["sagittarius"])}, 
+      {"Puppis", trim(CONF["puppis"])}, 
+      {"Pisces", trim(CONF["pisces"])}, 
+      {"Orion", trim(CONF["orion"])}, 
+      {"Ophiuchus", trim(CONF["ophiuchus"])}, 
+      {"Monoceros", trim(CONF["monoceros"])}, 
+      {"Lyra", trim(CONF["lyra"])}, 
+      {"Lupus", trim(CONF["lupus"])}, 
+      {"Libra", trim(CONF["libra"])}, 
+      {"Leo", trim(CONF["leo"])}, 
+      {"Gemini", trim(CONF["gemini"])},   
+      {"Cygnus", trim(CONF["cygnus"])}, 
+      {"Crux", trim(CONF["crux"])}, 
+      {"Corona Borealis", trim(CONF["coronaBorealis"])}, 
+      {"Circinus", trim(CONF["circinus"])}, 
+      {"Centaurus", trim(CONF["centaurus"])}, 
+      {"Cassiopeia", trim(CONF["cassiopeia"])}, 
+      {"Carina", trim(CONF["carina"])},
+      {"Capricorn", trim(CONF["capricorn"])}, 
+      {"Canis Minor", trim(CONF["canisMinor"])}, 
+      {"Canis Major", trim(CONF["canisMajor"])},
+      {"Canes Venatici", trim(CONF["canesVenatici"])}, 
+      {"Cancer", trim(CONF["cancer"])}, 
+      {"Camelopardalis", trim(CONF["camelopardalis"])},
+      {"Caelum", trim(CONF["caelum"])}, 
+      {"Auriga", trim(CONF["auriga"])}, 
+      {"Boötes", trim(CONF["bootes"])},
+      {"Aries", trim(CONF["aries"])}, 
+      {"Ara", trim(CONF["ara"])}, 
+      {"Aquila", trim(CONF["aquila"])},
+      {"Aquarius", trim(CONF["aquarius"])}, 
+      {"Apus", trim(CONF["apus"])}, 
+      {"Antlia", trim(CONF["antlia"])}
+    };
+    string nameToMatch = j["name"].get<string>();
     //renders the constellation's graph from the coordinates specified in the JSON file
     for(int i=1;i<=10;i++)  //for each of the lines (10)
     {
@@ -239,51 +286,14 @@ static inline void PrintConst(string &pathc)
       s = std::regex_replace(s, std::regex("Declination"), trim(CONF["declination"]));
       s = std::regex_replace(s, std::regex("Area"), trim(CONF["area"]));
       s = std::regex_replace(s, std::regex("Main stars"), trim(CONF["mainStars"]));
-
-      s = std::regex_replace(s, std::regex("Asar Bardagi"), trim(CONF["asarBardagi"]));
-      s = std::regex_replace(s, std::regex("Ulf's Keptr"), trim(CONF["ulfsKeptr"]));
-      s = std::regex_replace(s, std::regex("Kvennavagn"), trim(CONF["kvennavagn"]));
-      s = std::regex_replace(s, std::regex("Karlavagn"), trim(CONF["karlavagn"]));
-      s = std::regex_replace(s, std::regex("Friggerock"), trim(CONF["friggerock"]));
-      s = std::regex_replace(s, std::regex("Andromeda"), trim(CONF["andromeda"]));
-      s = std::regex_replace(s, std::regex("Virgo"), trim(CONF["virgo"]));
-      s = std::regex_replace(s, std::regex("Ursa Minor"), trim(CONF["ursaMinor"]));
-      s = std::regex_replace(s, std::regex("Ursa Major"), trim(CONF["ursaMajor"]));
-      s = std::regex_replace(s, std::regex("Taurus"), trim(CONF["taurus"]));
-      s = std::regex_replace(s, std::regex("Scorpio"), trim(CONF["scorpio"]));
-      s = std::regex_replace(s, std::regex("Sagittarius"), trim(CONF["sagittarius"]));
-      s = std::regex_replace(s, std::regex("Puppis"), trim(CONF["puppis"]));
-      s = std::regex_replace(s, std::regex("Pisces"), trim(CONF["pisces"]));
-      s = std::regex_replace(s, std::regex("Orion"), trim(CONF["orion"]));
-      s = std::regex_replace(s, std::regex("Ophiuchus"), trim(CONF["ophiuchus"]));
-      s = std::regex_replace(s, std::regex("Monoceros"), trim(CONF["monoceros"]));
-      s = std::regex_replace(s, std::regex("Lyra"), trim(CONF["lyra"]));
-      s = std::regex_replace(s, std::regex("Lupus"), trim(CONF["lupus"]));
-      s = std::regex_replace(s, std::regex("Libra"), trim(CONF["libra"]));
-      s = std::regex_replace(s, std::regex("Leo"), trim(CONF["leo"]));
-      s = std::regex_replace(s, std::regex("Gemini"), trim(CONF["gemini"]));
-      s = std::regex_replace(s, std::regex("Cygnus"), trim(CONF["cygnus"]));
-      s = std::regex_replace(s, std::regex("Crux"), trim(CONF["crux"]));
-      s = std::regex_replace(s, std::regex("Corona Borealis"), trim(CONF["coronaBorealis"]));
-      s = std::regex_replace(s, std::regex("Circinus"), trim(CONF["circinus"]));
-      s = std::regex_replace(s, std::regex("Centaurus"), trim(CONF["centaurus"]));
-      s = std::regex_replace(s, std::regex("Cassiopeia"), trim(CONF["cassiopeia"]));
-      s = std::regex_replace(s, std::regex("Carina"), trim(CONF["carina"]));
-      s = std::regex_replace(s, std::regex("Capricorn"), trim(CONF["capricorn"]));
-      s = std::regex_replace(s, std::regex("Canis Minor"), trim(CONF["canisMinor"]));
-      s = std::regex_replace(s, std::regex("Canis Major"), trim(CONF["canisMajor"]));
-      s = std::regex_replace(s, std::regex("Canes Venatici"), trim(CONF["canesVenatici"]));
-      s = std::regex_replace(s, std::regex("Cancer"), trim(CONF["cancer"]));
-      s = std::regex_replace(s, std::regex("Camelopardalis"), trim(CONF["camelopardalis"]));
-      s = std::regex_replace(s, std::regex("Caelum"), trim(CONF["caelum"]));
-      s = std::regex_replace(s, std::regex("Auriga"), trim(CONF["auriga"]));
-      s = std::regex_replace(s, std::regex("Boötes"), trim(CONF["bootes"]));
-      s = std::regex_replace(s, std::regex("Aries"), trim(CONF["aries"]));
-      s = std::regex_replace(s, std::regex("Ara"), trim(CONF["ara"]));
-      s = std::regex_replace(s, std::regex("Aquila"), trim(CONF["aquila"]));
-      s = std::regex_replace(s, std::regex("Aquarius"), trim(CONF["aquarius"]));
-      s = std::regex_replace(s, std::regex("Apus"), trim(CONF["apus"]));
-      s = std::regex_replace(s, std::regex("Antlia"), trim(CONF["antlia"]));
+      for (const auto &[key, val] : constellationsKeywords)
+      {
+        if (key == nameToMatch)
+        {
+          s = std::regex_replace(s, std::regex(key), val);
+          break;
+        }
+      }
     }
     c.close();
     cout << s << endl;  //prints the output
