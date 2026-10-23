@@ -39,16 +39,16 @@ static string SEP = "/";
 static string directories[2] = {"constellations", "norse-constellations"}; // array that holds all the directory paths. Consider using a multidimensional array to hold the directory name and also the "nickname" to be used for <type> when using "starfetch -n <type> <constellation>"
 static string REQUESTED_COLOR = "\033[1;37m"; // white color
 static unsigned int useRandomConst = 0U; /* controls whether to use the list with constellations or the input one */
-static string configLangs = path + string("langs.json");
-ifstream cfg(configLangs);
+static string configLangs = path + string("langs.json"); // the translated strings for the chosen language that get's setup on startup
+ifstream cfg(configLangs); // the langs.json that get's opened and read from
 
 int main(int argc, char *argv[])
 {
-  string reqLang = "none";
+  string requestedLang = "none";
   string pathc = path;    //path to the constellation file
-  if (argc >= 2) { reqLang = string(argv[1]); }
+  if (argc >= 2) { requestedLang = string(argv[1]); }
   unsigned int foundRequestedLanguage = 0U;
-  if (reqLang == "en" || reqLang == "bg" || reqLang == "it") { userLang = reqLang; foundRequestedLanguage = 1U; }
+  if (requestedLang == "en" || requestedLang == "bg" || requestedLang == "it") { userLang = requestedLang; foundRequestedLanguage = 1U; }
   if (!cfg) { cerr << "Error: Could not open " << configLangs << "\n"; return EXIT_FAILURE; }
   if(argc == 1 || argc == 2)   //if there's no additional arguments
   {
