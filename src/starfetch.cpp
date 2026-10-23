@@ -21,7 +21,7 @@ json config;
 std::string userLang = "en";
 #define CONF config[userLang]
 
-
+static int run(int argc, char *argv[]);
 static void setColor(string color); //sets given color to the REQUESTED_COLOR variable to colorize the output constellation
 static inline void PrintConst(string &pathc);  //formats the template file with the requested data and prints out the constellation info
 static void PrintList();   //prints out the list of the available constellations
@@ -43,6 +43,15 @@ static string configLangs = path + string("langs.json"); // the translated strin
 ifstream cfg(configLangs); // the langs.json that get's opened and read from
 
 int main(int argc, char *argv[])
+{
+  try { return run(argc, argv); }
+  catch (const json::exception &e) {
+    std::cerr << "Error: " << configLangs << " is outdated or broken, copy the new langs.json from the repository (" << e.what() << ")\n";
+    return EXIT_FAILURE;
+  }
+}
+
+int run(int argc, char *argv[])
 {
   string requestedLang = "none";
   string pathc = path;    //path to the constellation file
